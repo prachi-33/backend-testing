@@ -18,14 +18,15 @@ const app = express();
 const port = process.env.PORT || 3000;
 
 const allowedOrigins = ['http://localhost:8080'];
-
-// Middleware
-app.use(express.json());
-app.use("/api",mainRouter);
 app.use(cors({
   origin: allowedOrigins,
   credentials: true
 }));
+
+// Middleware
+app.use(express.json());
+app.use("/api",mainRouter);
+
 app.use(authenticate);
 app.use(checkRole);
 
