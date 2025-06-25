@@ -1,0 +1,57 @@
+
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+enum Role {
+  Contributor
+  Organizer
+}
+
+model Profile {
+  profile_id              String   @unique@default(uuid())
+  user_id                 String   @unique
+  username                String   
+  fullName                String   
+  bio                     String?
+  skills                  String?
+  interests               String?
+  role             Role
+  github_username         String?
+  discord_username        String?
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+}
+model Project {
+  project_id             String  @id@unique@default(uuid())
+  organizer_id           String  
+  title                  String
+  description            String
+  repository_url         String?
+  website_url            String?
+  tags                   String?
+  difficulty_lvl         String?
+  status                 String?
+  look_for_contributor   Boolean?
+  mentor_available       Boolean?
+  no_of_contributor      Int?
+  open_issues            Int?
+  merged_prs             Int?
+  createdAt              DateTime  @default(now())
+  updatedAt              DateTime  @updatedAt
+
+}
+
+model user {
+  row_id          String   @unique@default(uuid())
+  id              String   @unique
+  email           String   @unique
+  role            Role?  
+}

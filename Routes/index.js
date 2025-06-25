@@ -1,0 +1,11 @@
+import express from 'express';
+import profileRouter from "./Profile.js";
+import organizerRouter from "./Organizer.js";
+import contributorRouter from "./Contributor.js";
+import authRouter from "./auth.js";
+const router=express.Router();
+router.use("/profile",profileRouter);
+router.use("/organizer",organizerRouter);
+router.use("/contributor",contributorRouter);
+router.use("/auth",authRouter);
+export default router;
