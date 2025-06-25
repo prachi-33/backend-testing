@@ -1,7 +1,7 @@
 import dotenv from "dotenv";
 dotenv.config();
-import cors from 'cors';
 import express from 'express';
+import cors from "cors";
 import { createClient } from '@supabase/supabase-js';
 import { PrismaClient } from '@prisma/client';
 import authenticate from "./middleware/auth.js";
@@ -17,10 +17,15 @@ const prisma = new PrismaClient();
 const app = express();
 const port = process.env.PORT || 3000;
 
+const allowedOrigins = ['http://localhost:8080'];
+
 // Middleware
 app.use(express.json());
 app.use("/api",mainRouter);
-app.use(cors());
+app.use(cors({
+  origin: allowedOrigins,
+  credentials: true
+}));
 app.use(authenticate);
 app.use(checkRole);
 
