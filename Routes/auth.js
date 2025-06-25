@@ -31,6 +31,9 @@ router.post('/signup', async (req, res) => {
     const { data: authData, error: authError } = await supabase.auth.signUp({
       email:email,
       password:password,
+      options: {
+        emailRedirectTo: 'http://localhost:8080/profile-setup'  
+      }
     });
 
     if (authError) res.status(400).json({"err":authError});
