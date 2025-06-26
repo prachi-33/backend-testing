@@ -32,7 +32,7 @@ router.post("/profile-setup",authenticate, async (req,res)=>{
     try{
         const result=profileSchema.safeParse(req.body);
         if(!result.success){
-            res.status(409).json({
+            return res.status(409).json({
                 "msg":"Incorrect Inputs"
             })
         }
