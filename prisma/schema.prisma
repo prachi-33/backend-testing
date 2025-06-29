@@ -21,8 +21,8 @@ model profile {
   username                  String   
   fullName                  String   
   bio                       String?
-  skills                    String[]?
-  interests                 String[]?
+  skills                    String[]
+  interests                 String[]
   role             Role
   github_username           String?
   discord_username          String?
@@ -83,7 +83,7 @@ model project {
   description              String
   repository_url           String?
   website_url              String?
-  tags                     String[]?
+  tags                     String[]
   difficulty_lvl           String?
   status                   String?
   look_for_contributor   Boolean?
