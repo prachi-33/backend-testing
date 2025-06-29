@@ -37,10 +37,9 @@ router.post('/signup', async (req, res) => {
     });
 
     if (authError) res.status(400).json({"err":authError});
-    const newUser = await prisma.user.create({
+    const newUser = await prisma.user_role.create({
       data: {
-        id: authData.user.id,
-        email:email
+        id: authData.user.id
       }
     });
 

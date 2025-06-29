@@ -14,7 +14,7 @@ const authenticate = async (req, res, next) => {
     if (error || !user) {
       return res.status(401).json({ message: 'Invalid token' });
     }
-    const dbUser = await prisma.user.findUnique({
+    const dbUser = await prisma.user_role.findUnique({
       where: { id: user.id },
     });
 

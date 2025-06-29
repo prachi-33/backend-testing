@@ -10,7 +10,7 @@ const createProblemSchema=z.object({
     description:z.string(),
     repository_url:z.string().optional(),
     website_url:z.string().optional(),
-    tags:z.string().optional(),
+    tags:z.array(z.string()).optional(),
     difficulty_lvl:z.string().optional(),
     status:z.string().optional(),
     look_for_contributor:z.boolean().optional(),
@@ -21,7 +21,7 @@ const createProblemSchema=z.object({
 
 })
 
-router.post("/problem-info",authenticate,checkRole("Organizer"),async (req,res)=>{
+router.post("/project-info",authenticate,checkRole("Organizer"),async (req,res)=>{
     const {
         title,
         description,
@@ -42,7 +42,7 @@ router.post("/problem-info",authenticate,checkRole("Organizer"),async (req,res)=
         if(!result.success){
             return res.status(409).json({"msg":"Incorrect Inputs"});
         }
-        const problem=await prisma.Project.create({
+        const problem=await prisma.project.create({
             data:{
                 organizer_id:organizer_id,
                 title:title,
@@ -71,9 +71,9 @@ router.post("/problem-info",authenticate,checkRole("Organizer"),async (req,res)=
     }
 })
 
-router.get("/all-problems-info",authenticate,async (req,res)=>{
+router.get("/all-projects-info",authenticate,async (req,res)=>{
     try{
-        const problems =await prisma.Project.findMany()
+        const problems =await prisma.project.findMany()
         res.status(200).json({
             "message":"All Problems",
             "ProfileInfo":problems
@@ -83,7 +83,7 @@ router.get("/all-problems-info",authenticate,async (req,res)=>{
     }
 })
 
-router.get("/search-problem",authenticate,async(req,res)=>{
+router.get("/search-project",authenticate,async(req,res)=>{
     const {title}=req.query;
     try {
         const projects = await prisma.project.findMany({

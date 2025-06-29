@@ -8,7 +8,7 @@ const router = express.Router();
 router.get("/role",authenticate,async (req,res)=>{
     const id =req.user.id;
     try{
-        const user_info=await prisma.user.findUnique({
+        const user_info=await prisma.user_role.findUnique({
             where:{
                 id:id
             }

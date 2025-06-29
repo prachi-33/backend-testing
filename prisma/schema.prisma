@@ -15,30 +15,77 @@ enum Role {
   Organizer
 }
 
-model Profile {
-  profile_id              String   @unique@default(uuid())
-  user_id                 String   @unique
-  username                String   
-  fullName                String   
-  bio                     String?
-  skills                  String?
-  interests               String?
+model profile {
+  id                        String   @unique@default(uuid())
+  user_id                   String   @unique
+  username                  String   
+  fullName                  String   
+  bio                       String?
+  skills                    String[]?
+  interests                 String[]?
   role             Role
-  github_username         String?
-  discord_username        String?
+  github_username           String?
+  discord_username          String?
   createdAt        DateTime  @default(now())
   updatedAt        DateTime  @updatedAt
 }
-model Project {
-  project_id             String  @id@unique@default(uuid())
-  organizer_id           String  
-  title                  String
-  description            String
-  repository_url         String?
-  website_url            String?
-  tags                   String?
-  difficulty_lvl         String?
-  status                 String?
+
+
+model contribution {
+  id          String   @id @default(uuid())
+  title       String
+  type        String
+  userId      String
+  projectId   String
+  status      String?
+  url         String?
+  createdAt DateTime? @default(now())
+
+  project   project @relation(fields: [projectId], references: [id])
+}
+
+
+
+
+model activity {
+  id            String   @id @default(uuid())
+  title         String
+  description   String?
+  type          String
+  userId        String
+  projectId     String?
+  createdAt   DateTime? @default(now())
+  metadata    Json?
+
+  project     project? @relation(fields: [projectId], references: [id])
+}
+
+
+
+model bookmark {
+  id          String   @id @default(uuid())
+  projectId   String
+  userId      String
+  createdAt DateTime? @default(now())
+
+  project   project @relation(fields: [projectId], references: [id])
+}
+
+
+
+
+
+
+model project {
+  id               String  @id@unique@default(uuid())
+  organizer_id             String  
+  title                    String
+  description              String
+  repository_url           String?
+  website_url              String?
+  tags                     String[]?
+  difficulty_lvl           String?
+  status                   String?
   look_for_contributor   Boolean?
   mentor_available       Boolean?
   no_of_contributor      Int?
@@ -47,11 +94,35 @@ model Project {
   createdAt              DateTime  @default(now())
   updatedAt              DateTime  @updatedAt
 
+  activities     activity[]
+  contributions  contribution[]
+  bookmarks      bookmark[]
+
 }
 
-model user {
-  row_id          String   @unique@default(uuid())
-  id              String   @unique
-  email           String   @unique
-  role            Role?  
+
+
+model badge {
+  id            String   @id @default(uuid())
+  name          String
+  description   String?
+  icon          String?
+  criteria    Json?
+  createdAt   DateTime? @default(now())
+}
+
+model userBadge {
+  id          String   @id @default(uuid())
+  userId      String
+  badgeId     String
+  earnedAt  DateTime?
+
+  badge     badge @relation(fields: [badgeId], references: [id])
+}
+
+model user_role {
+  id         String     @id@default(uuid())
+  userId     String
+  role       String     
+  createdAt  DateTime   
 }

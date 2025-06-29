@@ -8,8 +8,8 @@ const profileSchema=z.object({
     username:z.string(),
     fullName:z.string(),
     bio:z.string().optional(),
-    skills:z.string().optional(),
-    interests:z.string().optional(),
+    skills:z.array(z.string()).optional(),
+    interests:z.array(z.string()).optional(),
     role:z.enum(["Organizer","Contributor"]),
     github_username:z.string().optional(),
     discord_username:z.string().optional()
@@ -36,7 +36,7 @@ router.post("/profile-setup",authenticate, async (req,res)=>{
                 "msg":"Incorrect Inputs"
             })
         }
-        const profile= await prisma.Profile.create({
+        const profile= await prisma.profile.create({
             data:{
                 user_id:id,
                 username:username,
@@ -52,7 +52,7 @@ router.post("/profile-setup",authenticate, async (req,res)=>{
 
             
         })
-        const update=await prisma.user.update({
+        const update=await prisma.user_role.update({
             where:{
                 id:id
             },
@@ -75,7 +75,7 @@ router.post("/profile-setup",authenticate, async (req,res)=>{
 router.get("/profile-info",authenticate,async (req,res)=>{
     const id =req.user.id;
     try{
-        const profile =await prisma.Profile.findUnique({
+        const profile =await prisma.profile.findUnique({
             where:{
                 user_id:id
             }
@@ -119,7 +119,7 @@ router.put("/profile-edit",authenticate,async(req,res)=>{
                 "msg":"Incorrect Inputs"
             })
         }
-        const updated=await prisma.Profile.update({
+        const updated=await prisma.profile.update({
             where:{
                 user_id:id
             },
