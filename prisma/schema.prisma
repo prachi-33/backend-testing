@@ -109,15 +109,17 @@ model badge {
   icon          String?
   criteria    Json?
   createdAt   DateTime? @default(now())
+
+  userBadge   userBadge[]
 }
 
 model userBadge {
   id          String   @id @default(uuid())
   userId      String
   badgeId     String
-  earnedAt  DateTime?
+  earnedAt    DateTime?
 
-  badge     badge @relation(fields: [badgeId], references: [id])
+  badge       badge @relation(fields: [badgeId], references: [id])
 }
 
 model user_role {
