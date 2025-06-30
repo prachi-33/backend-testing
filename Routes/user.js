@@ -10,8 +10,7 @@ const userSchema=z.object({
     role:z.enum(["organizer","contributor"])
 })
 
-router.post("/post",authenticate,async (req,res)=>{
-    const id=req.user.id;
+router.post("/post",async (req,res)=>{
     try{
         const result=userSchema.safeParse(req.body);
         if(!result.success){
@@ -19,10 +18,11 @@ router.post("/post",authenticate,async (req,res)=>{
         }
         const user=await prisma.user_roles.create({
             data:{
-                user_id:id,
+                user_id:req.body.user_id,
                 role:req.body.role
             }
         })
+        return res.status(200).json({"msg":"successfull "})
     }catch(error){
         res.status(400).json({error:error.description})
     }
