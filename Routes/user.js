@@ -1,8 +1,32 @@
 import express from 'express';
 import { prisma } from '../index.js';
 import authenticate from '../middleware/auth.js';
+import z from "zod";
 
 const router = express.Router();
+
+const userSchema=z.object({
+    user_id:z.string(),
+    role:z.enum(["organizer","contributor"])
+})
+
+router.post("/post",authenticate,async (req,res)=>{
+    const id=req.user.id;
+    try{
+        const result=userSchema.safeParse(req.body);
+        if(!result.success){
+            return res.status(409).json({"msg":"Wrong inputs"})
+        }
+        const user=await prisma.user_roles.create({
+            data:{
+                user_id:id,
+                role:req.body.role
+            }
+        })
+    }catch(error){
+        res.status(400).json({error:error.description})
+    }
+})
 
 // Get user role by user ID
 router.get("/role",authenticate,async (req,res)=>{

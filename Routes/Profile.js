@@ -52,14 +52,7 @@ router.post("/profile-setup",authenticate, async (req,res)=>{
 
             
         })
-        const update=await prisma.user_role.update({
-            where:{
-                user_id:id
-            },
-            data:{
-                role:role
-            }
-        })
+        
         res.status(201).json({
             "message":"Profile setup done",
             "profile":profile
