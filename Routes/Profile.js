@@ -1,10 +1,10 @@
 import express from 'express';
 import z from "zod";
 import { supabase, prisma } from "../index.js";
-import authenticate from '../middleware/auth.js';
 const router=express.Router();
 
 const profileSchema=z.object({
+    id:z.string(),
     username:z.string(),
     full_name:z.string(),
     bio:z.string().optional(),
@@ -16,8 +16,9 @@ const profileSchema=z.object({
 
 })
 
-router.post("/profile-setup",authenticate, async (req,res)=>{
+router.post("/profile-setup", async (req,res)=>{
     const {
+        id,
         username,
         full_name,
         bio,
@@ -27,7 +28,6 @@ router.post("/profile-setup",authenticate, async (req,res)=>{
         github_username,
         discord_username
     }=req.body;
-    const id=req.user.id;
 
     try{
         const result=profileSchema.safeParse(req.body);
@@ -38,7 +38,7 @@ router.post("/profile-setup",authenticate, async (req,res)=>{
         }
         const profile= await prisma.profiles.create({
             data:{
-                user_id:id,
+                id:id,
                 username:username,
                 full_name:fullName,
                 bio:bio,
@@ -53,7 +53,7 @@ router.post("/profile-setup",authenticate, async (req,res)=>{
             
         })
         
-        res.status(201).json({
+        res.status(200).json({
             "message":"Profile setup done",
             "profile":profile
         })
@@ -65,8 +65,8 @@ router.post("/profile-setup",authenticate, async (req,res)=>{
     
 })
 
-router.get("/profile-info",authenticate,async (req,res)=>{
-    const id =req.user.id;
+router.get("/profile-info",async (req,res)=>{
+    const id=req.params.id;
     try{
         const profile =await prisma.profiles.findUnique({
             where:{
@@ -94,8 +94,8 @@ const updateProfileSchema=z.object({
 })
 
 
-router.put("/profile-edit",authenticate,async(req,res)=>{
-    const id=req.user.id;
+router.put("/profile-edit",async(req,res)=>{
+    const id=req.params.id;
     const {
         username,
         fullName,

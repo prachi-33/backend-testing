@@ -1,11 +1,10 @@
 import express from 'express';
 import {prisma} from "../index.js";
 import z from "zod";
-import authenticate from '../middleware/auth.js';
-import { checkRole } from '../middleware/role-check.js';
 const router=express.Router();
 
 const createProblemSchema=z.object({
+    organizer_id:z.string(),
     title:z.string(),
     description:z.string(),
     repository_url:z.string().optional(),
@@ -21,8 +20,9 @@ const createProblemSchema=z.object({
 
 })
 
-router.post("/project-info",authenticate,checkRole("Organizer"),async (req,res)=>{
+router.post("/project-info",async (req,res)=>{
     const {
+        organizer_id,
         title,
         description,
         repository_url,
@@ -36,7 +36,7 @@ router.post("/project-info",authenticate,checkRole("Organizer"),async (req,res)=
         open_issues,
         merged_prs
     }=req.body;
-    const organizer_id=req.user.id;
+    
     try{
         const result=createProblemSchema.safeParse(req.body);
         if(!result.success){
@@ -61,7 +61,7 @@ router.post("/project-info",authenticate,checkRole("Organizer"),async (req,res)=
             }
         })
 
-        res.status(201).json({
+        res.status(200).json({
             "message":"Problem created",
             "problem-info":problem
         })
@@ -71,9 +71,9 @@ router.post("/project-info",authenticate,checkRole("Organizer"),async (req,res)=
     }
 })
 
-router.get("/all-projects-info",authenticate,async (req,res)=>{
+router.get("/all-projects-info",async (req,res)=>{
     try{
-        const problems =await prisma.project.findMany()
+        const problems =await prisma.projects.findMany()
         res.status(200).json({
             "message":"All Problems",
             "ProfileInfo":problems
@@ -86,7 +86,7 @@ router.get("/all-projects-info",authenticate,async (req,res)=>{
 router.get("/search-project",authenticate,async(req,res)=>{
     const {title}=req.query;
     try {
-        const projects = await prisma.project.findMany({
+        const projects = await prisma.projects.findMany({
         where: {
             title: {
             contains: title, 
